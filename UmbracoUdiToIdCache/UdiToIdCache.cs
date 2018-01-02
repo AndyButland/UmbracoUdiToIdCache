@@ -24,11 +24,16 @@
                 var reader = command.ExecuteReader();
                 while (reader.Read())
                 {
-                    Mapping.TryAdd(Udi.Parse($"umb://document/{reader.GetGuid(1).ToString().Replace("-", string.Empty)}"), reader.GetInt32(0));
+                    Mapping.TryAdd(ParseUdiFromGuidField(reader), reader.GetInt32(0));
                 }
 
                 reader.Close();
             }
+        }
+
+        private static Udi ParseUdiFromGuidField(SqlDataReader reader)
+        {
+            return Udi.Parse($"umb://document/{reader.GetGuid(1).ToString().Replace("-", string.Empty)}");
         }
 
         /// <summary>
