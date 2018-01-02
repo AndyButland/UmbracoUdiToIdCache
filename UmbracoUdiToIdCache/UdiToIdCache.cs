@@ -43,7 +43,7 @@
         public static void AddToCache(IContent content)
         {
             var key = content.GetUdi();
-            if (Mapping.ContainsKey(key))
+            if (!Mapping.ContainsKey(key))
             {
                 Mapping.TryAdd(key, content.Id);
             }
@@ -58,6 +58,11 @@
         public static bool TryGetId(Udi udi, out int value)
         {
             return Mapping.TryGetValue(udi, out value);
+        }
+
+        internal static void Clear()
+        {
+            Mapping.Clear();
         }
     }
 }

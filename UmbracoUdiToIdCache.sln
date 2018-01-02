@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UmbracoUdiToIdCache", "Umbr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestWebApp", "TestWebApp\TestWebApp.csproj", "{AA4FC9C2-E85C-4EA8-998A-EC7A99DF4D33}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UmbracoUdiToIdCache.Tests", "UmbracoUdiToIdCache.Tests\UmbracoUdiToIdCache.Tests.csproj", "{F072C54A-0EB6-480B-A275-ECCEA812140B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{AA4FC9C2-E85C-4EA8-998A-EC7A99DF4D33}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AA4FC9C2-E85C-4EA8-998A-EC7A99DF4D33}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AA4FC9C2-E85C-4EA8-998A-EC7A99DF4D33}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F072C54A-0EB6-480B-A275-ECCEA812140B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F072C54A-0EB6-480B-A275-ECCEA812140B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F072C54A-0EB6-480B-A275-ECCEA812140B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F072C54A-0EB6-480B-A275-ECCEA812140B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
