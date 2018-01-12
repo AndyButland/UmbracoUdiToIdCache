@@ -8,8 +8,8 @@ namespace Our.Umbraco.UdiCache
 {
     internal static class GuidToIdCache
     {
-        private static ConcurrentDictionary<Guid, int> _forward = new ConcurrentDictionary<Guid, int>();
-        private static ConcurrentDictionary<int, Guid> _reverse = new ConcurrentDictionary<int, Guid>();
+        private static readonly ConcurrentDictionary<Guid, int> Forward = new ConcurrentDictionary<Guid, int>();
+        private static readonly ConcurrentDictionary<int, Guid> Reverse = new ConcurrentDictionary<int, Guid>();
 
         private class TempDto
         {
@@ -34,8 +34,8 @@ namespace Our.Umbraco.UdiCache
 
         public static void ClearAll()
         {
-            _forward.Clear();
-            _reverse.Clear();
+            Forward.Clear();
+            Reverse.Clear();
         }
 
         public static void TryAdd(IContent content)
@@ -45,37 +45,39 @@ namespace Our.Umbraco.UdiCache
 
         public static void TryAdd(Guid guid, int id)
         {
-            _forward.TryAdd(guid, id);
-            _reverse.TryAdd(id, guid);
+            Forward.TryAdd(guid, id);
+            Reverse.TryAdd(id, guid);
         }
 
         public static bool TryGetId(Guid key, out int id)
         {
-            return _forward.TryGetValue(key, out id);
+            return Forward.TryGetValue(key, out id);
         }
 
         public static bool TryGetGuid(int id, out Guid key)
         {
-            return _reverse.TryGetValue(id, out key);
+            return Reverse.TryGetValue(id, out key);
         }
 
         public static void TryRemove(IContent content)
         {
             if (TryRemove(content.Id) == false)
+            {
                 TryRemove(content.Key);
+            }
         }
 
         public static bool TryRemove(Guid guid)
         {
-            return _forward.TryRemove(guid, out int id)
-                ? _reverse.TryRemove(id, out guid)
+            return Forward.TryRemove(guid, out int id)
+                ? Reverse.TryRemove(id, out guid)
                 : false;
         }
 
         public static bool TryRemove(int id)
         {
-            return _reverse.TryRemove(id, out Guid guid)
-                ? _forward.TryRemove(guid, out id)
+            return Reverse.TryRemove(id, out Guid guid)
+                ? Forward.TryRemove(guid, out id)
                 : false;
         }
     }

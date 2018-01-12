@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2009
+VisualStudioVersion = 15.0.27004.2005
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UmbracoUdiToIdCache", "UmbracoUdiToIdCache\UmbracoUdiToIdCache.csproj", "{F6D224E5-0480-4A80-B993-6F1CE5809C28}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Umbraco.UdiCache", "Our.Umbraco.UdiCache\Our.Umbraco.UdiCache.csproj", "{F6D224E5-0480-4A80-B993-6F1CE5809C28}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UmbracoUdiToIdCache.Tests", "UmbracoUdiToIdCache.Tests\UmbracoUdiToIdCache.Tests.csproj", "{F072C54A-0EB6-480B-A275-ECCEA812140B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Umbraco.UdiCache.Tests", "Our.Umbraco.UdiCache.Tests\Our.Umbraco.UdiCache.Tests.csproj", "{F072C54A-0EB6-480B-A275-ECCEA812140B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -12,6 +12,7 @@ namespace Umbraco.Web
         /// </summary>
         /// <param name="helper">The instance of <see cref="UmbracoHelper"/> to add extension method.</param>
         /// <param name="udi">The <see cref="Udi"/> of the content item.</param>
+        /// <param name="usingUdiToIdCache">Flag indicating intention to use Udi to Id cache</param>
         /// <returns>The content, or null of the content item is not in the cache.</returns>
         public static IPublishedContent TypedContent(this UmbracoHelper helper, Udi udi, bool usingUdiToIdCache)
         {
@@ -25,7 +26,7 @@ namespace Umbraco.Web
         /// </summary>
         /// <param name="helper">The instance of <see cref="UmbracoHelper"/> to add extension method.</param>
         /// <param name="guid">The key of the content item.</param>
-        /// <param name="usingUdiToIdCache"></param>
+        /// <param name="usingUdiToIdCache">Flag indicating intention to use Udi to Id cache</param>
         /// <returns>The content, or null of the content item is not in the cache.</returns>
         public static IPublishedContent TypedContent(this UmbracoHelper helper, Guid guid, bool usingUdiToIdCache)
         {

@@ -7,8 +7,8 @@
     <ProjectGuid>{F072C54A-0EB6-480B-A275-ECCEA812140B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>UmbracoUdiToIdCache.Tests</RootNamespace>
-    <AssemblyName>UmbracoUdiToIdCache.Tests</AssemblyName>
+    <RootNamespace>Our.Umbraco.UdiCache.Tests</RootNamespace>
+    <AssemblyName>Our.Umbraco.UdiCache.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -232,7 +232,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="UdiToIdCacheTests.cs" />
+    <Compile Include="GuidToIdCacheTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -240,9 +240,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\UmbracoUdiToIdCache\UmbracoUdiToIdCache.csproj">
+    <ProjectReference Include="..\Our.Umbraco.UdiCache\Our.Umbraco.UdiCache.csproj">
       <Project>{f6d224e5-0480-4a80-b993-6f1ce5809c28}</Project>
-      <Name>UmbracoUdiToIdCache</Name>
+      <Name>Our.Umbraco.UdiCache</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />

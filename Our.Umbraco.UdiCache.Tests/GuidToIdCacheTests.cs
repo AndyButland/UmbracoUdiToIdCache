@@ -5,7 +5,7 @@ using Moq;
 using Our.Umbraco.UdiCache;
 using Umbraco.Core.Models;
 
-namespace UmbracoUdiToIdCache.Tests
+namespace Our.Umbraco.UdiCache.Tests
 {
     [TestClass]
     public class GuidToIdCacheTests
