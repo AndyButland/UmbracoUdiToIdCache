@@ -1,24 +1,37 @@
-﻿namespace Umbraco.Web
-{
-    using Umbraco.Core;
-    using Umbraco.Core.Models;
-    using Umbraco.Web;
-    using UmbracoUdiToIdCache;
+﻿using System;
+using Our.Umbraco.UdiCache;
+using Umbraco.Core;
+using Umbraco.Core.Models;
 
+namespace Umbraco.Web
+{
     public static class UmbracoHelperExtensions
     {
         /// <summary>
-        /// Adds an extension to <see cref="UmbracoHelper"/> to make a call to TypedContent for a Udi
-        /// via a look-up to get the numeric Id
+        /// Gets a content item from the cache.
         /// </summary>
-        /// <param name="helper">Umbraco helper</param>
-        /// <param name="udi">Udi of content node</param>
-        /// <returns>Instance of <see cref="IPublishedContent"/></returns>
-        public static IPublishedContent TypedContentUsingUdiToIdCache(this UmbracoHelper helper, Udi udi)
+        /// <param name="helper">The instance of <see cref="UmbracoHelper"/> to add extension method.</param>
+        /// <param name="udi">The <see cref="Udi"/> of the content item.</param>
+        /// <returns>The content, or null of the content item is not in the cache.</returns>
+        public static IPublishedContent TypedContent(this UmbracoHelper helper, Udi udi, bool usingUdiToIdCache)
         {
-            return UdiToIdCache.TryGetId(udi, out int id) 
-                ? helper.TypedContent(id) 
+            return usingUdiToIdCache && udi is GuidUdi guidUdi && GuidToIdCache.TryGetId(guidUdi.Guid, out int id)
+                ? helper.TypedContent(id)
                 : helper.TypedContent(udi);
+        }
+
+        /// <summary>
+        /// Gets a content item from the cache.
+        /// </summary>
+        /// <param name="helper">The instance of <see cref="UmbracoHelper"/> to add extension method.</param>
+        /// <param name="guid">The key of the content item.</param>
+        /// <param name="usingUdiToIdCache"></param>
+        /// <returns>The content, or null of the content item is not in the cache.</returns>
+        public static IPublishedContent TypedContent(this UmbracoHelper helper, Guid guid, bool usingUdiToIdCache)
+        {
+            return usingUdiToIdCache && GuidToIdCache.TryGetId(guid, out int id)
+                ? helper.TypedContent(id)
+                : helper.TypedContent(guid);
         }
     }
 }

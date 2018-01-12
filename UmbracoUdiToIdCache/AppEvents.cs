@@ -1,35 +1,36 @@
-﻿namespace UmbracoUdiToIdCache
+﻿using Umbraco.Core;
+using Umbraco.Core.Cache;
+using Umbraco.Core.Models;
+using Umbraco.Core.Sync;
+using Umbraco.Web.Cache;
+
+namespace Our.Umbraco.UdiCache
 {
-    using Umbraco.Core;
-    using Umbraco.Core.Events;
-    using Umbraco.Core.Models;
-    using Umbraco.Core.Publishing;
-    using Umbraco.Core.Services;
-
-    public class AppEvents : IApplicationEventHandler
+    public class AppEvents : ApplicationEventHandler
     {
-        public void OnApplicationInitialized(UmbracoApplicationBase umbracoApplication, ApplicationContext applicationContext)
-        {
-        }
-
-        public void OnApplicationStarting(UmbracoApplicationBase umbracoApplication, ApplicationContext applicationContext)
-        {
-        }
-
-        public void OnApplicationStarted(UmbracoApplicationBase umbracoApplication, ApplicationContext applicationContext)
+        protected override void ApplicationStarted(UmbracoApplicationBase umbracoApplication, ApplicationContext applicationContext)
         {
             // Build the mapping from Udi to Id on start-up.
-            UdiToIdCache.BuildCache(ApplicationContext.Current.DatabaseContext.ConnectionString);
+            GuidToIdCache.BuildCache(applicationContext.DatabaseContext);
 
-            // On content publish, add the mapping for the created node if not already there.
-            ContentService.Published += ContentServicePublished;
+            // On content cache refresh, update the mappings.
+            PageCacheRefresher.CacheUpdated += PageCacheRefresher_CacheUpdated;
+            UnpublishedPageCacheRefresher.CacheUpdated += UnpublishedPageCacheRefresher_CacheUpdated;
         }
 
-        private static void ContentServicePublished(IPublishingStrategy sender, PublishEventArgs<IContent> args)
+        private void PageCacheRefresher_CacheUpdated(PageCacheRefresher sender, CacheRefresherEventArgs e)
         {
-            foreach (var node in args.PublishedEntities)
+            if (e.MessageType == MessageType.RefreshByInstance && e.MessageObject is IContent instance)
             {
-                UdiToIdCache.AddToCache(node);
+                GuidToIdCache.TryAdd(instance);
+            }
+        }
+
+        private void UnpublishedPageCacheRefresher_CacheUpdated(UnpublishedPageCacheRefresher sender, CacheRefresherEventArgs e)
+        {
+            if (e.MessageType == MessageType.RemoveByInstance && e.MessageObject is IContent instance)
+            {
+                GuidToIdCache.TryRemove(instance);
             }
         }
     }

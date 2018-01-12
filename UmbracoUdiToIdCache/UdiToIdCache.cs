@@ -1,68 +1,82 @@
-﻿namespace UmbracoUdiToIdCache
+﻿using System;
+using System.Collections.Concurrent;
+using Umbraco.Core;
+using Umbraco.Core.Models;
+using Umbraco.Core.Persistence;
+
+namespace Our.Umbraco.UdiCache
 {
-    using System.Collections.Concurrent;
-    using System.Data.SqlClient;
-    using Umbraco.Core;
-    using Umbraco.Core.Models;
-
-    public static class UdiToIdCache
+    internal static class GuidToIdCache
     {
-        private static readonly ConcurrentDictionary<Udi, int> Mapping = new ConcurrentDictionary<Udi, int>();
+        private static ConcurrentDictionary<Guid, int> _forward = new ConcurrentDictionary<Guid, int>();
+        private static ConcurrentDictionary<int, Guid> _reverse = new ConcurrentDictionary<int, Guid>();
 
-        /// <summary>
-        /// Builds the mapping cache via a database query.  To be called on application start-up.
-        /// </summary>
-        /// <param name="connectionString">Connection string</param>
-        public static void BuildCache(string connectionString)
+        private class TempDto
         {
-            using (var connection = new SqlConnection(connectionString))
-            {
-                const string Sql = "SELECT nodeId, uniqueId FROM cmsDocument d INNER JOIN umbracoNode n ON n.id = d.nodeId";
-                var command = new SqlCommand(Sql, connection);
-                connection.Open();
+            [Column("id")]
+            public int NodeId { get; set; }
 
-                var reader = command.ExecuteReader();
-                while (reader.Read())
+            [Column("uniqueID")]
+            public Guid UniqueId { get; set; }
+        }
+
+        public static void BuildCache(DatabaseContext databaseContext)
+        {
+            using (var db = databaseContext.Database)
+            {
+                var rows = db.Query<TempDto>("SELECT uniqueId, id FROM umbracoNode WHERE nodeObjectType = @0 AND trashed = 0;", Constants.ObjectTypes.Document);
+                foreach (var row in rows)
                 {
-                    Mapping.TryAdd(ParseUdiFromGuidField(reader), reader.GetInt32(0));
+                    TryAdd(row.UniqueId, row.NodeId);
                 }
-
-                reader.Close();
             }
         }
 
-        private static Udi ParseUdiFromGuidField(SqlDataReader reader)
+        public static void ClearAll()
         {
-            return Udi.Parse($"umb://document/{reader.GetGuid(1).ToString().Replace("-", string.Empty)}");
+            _forward.Clear();
+            _reverse.Clear();
         }
 
-        /// <summary>
-        /// Adds an item to the mapping cache if it's not already there.  To be called on node publish.
-        /// </summary>
-        /// <param name="content">Content item</param>
-        public static void AddToCache(IContent content)
+        public static void TryAdd(IContent content)
         {
-            var key = content.GetUdi();
-            if (!Mapping.ContainsKey(key))
-            {
-                Mapping.TryAdd(key, content.Id);
-            }
+            TryAdd(content.Key, content.Id);
         }
 
-        /// <summary>
-        /// Gets the Id for a content node given a Udi from the mapping cache
-        /// </summary>
-        /// <param name="udi">Udi of content node</param>
-        /// <param name="value">Id of content node</param>
-        /// <returns>True if id found</returns>
-        public static bool TryGetId(Udi udi, out int value)
+        public static void TryAdd(Guid guid, int id)
         {
-            return Mapping.TryGetValue(udi, out value);
+            _forward.TryAdd(guid, id);
+            _reverse.TryAdd(id, guid);
         }
 
-        internal static void Clear()
+        public static bool TryGetId(Guid key, out int id)
         {
-            Mapping.Clear();
+            return _forward.TryGetValue(key, out id);
+        }
+
+        public static bool TryGetGuid(int id, out Guid key)
+        {
+            return _reverse.TryGetValue(id, out key);
+        }
+
+        public static void TryRemove(IContent content)
+        {
+            if (TryRemove(content.Id) == false)
+                TryRemove(content.Key);
+        }
+
+        public static bool TryRemove(Guid guid)
+        {
+            return _forward.TryRemove(guid, out int id)
+                ? _reverse.TryRemove(id, out guid)
+                : false;
+        }
+
+        public static bool TryRemove(int id)
+        {
+            return _reverse.TryRemove(id, out Guid guid)
+                ? _forward.TryRemove(guid, out id)
+                : false;
         }
     }
 }
